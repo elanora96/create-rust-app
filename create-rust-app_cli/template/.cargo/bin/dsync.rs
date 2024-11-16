@@ -42,6 +42,7 @@ pub fn main() {
                 schema_path: "crate::schema::".to_string(),
                 ..Default::default()
             },
+            diesel_backend: "diesel::pg::Pg".to_string(),
         },
     )
     .unwrap();

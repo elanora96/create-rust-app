@@ -429,7 +429,11 @@ pub fn create(project_name: &str, creation_options: CreationOptions) -> Result<(
     )?;
     // todo: move these deps to the helper crate (./create-rust-app/Cargo.toml) behind feature flags
     add_dependency(&project_dir, "tsync", r#"tsync = "2""#)?;
-    add_dependency(&project_dir, "dsync", r#"dsync = "0""#)?;
+    add_dependency(
+        &project_dir,
+        "dsync",
+        r#"dsync = { version="0.1", features = ["advanced-queries"] }"#,
+    )?;
     add_dependency(
         &project_dir,
         "diesel",
