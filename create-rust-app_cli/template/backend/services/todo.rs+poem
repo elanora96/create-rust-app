@@ -6,7 +6,7 @@ use poem::{
     IntoResponse, Result, Route,
 };
 use create_rust_app::Database;
-use crate::models::todos::{CreateTodo, Todo, UpdateTodo};
+use crate::models::todos::{CreateTodos, Todos, UpdateTodos};
 
 #[tsync::tsync]
 #[derive(serde::Deserialize)]
@@ -22,7 +22,7 @@ async fn index(
 ) -> Result<impl IntoResponse> {
     let mut con = db.get_connection().unwrap();
 
-    let result = Todo::paginate(&mut con, pagination.page, pagination.page_size)
+    let result = Todos::paginate(&mut con, pagination.page, pagination.page_size)
         .map(|items| Json(items))
         .map_err(InternalServerError)?;
 
@@ -33,7 +33,7 @@ async fn index(
 async fn read(db: Data<&Database>, Path(item_id): Path<i32>) -> Result<impl IntoResponse> {
     let mut con = db.get_connection().unwrap();
 
-    let result = Todo::read(&mut con, item_id)
+    let result = Todos::read(&mut con, item_id)
         .map(|item| Json(item))
         .map_err(NotFound)?;
 
@@ -43,11 +43,11 @@ async fn read(db: Data<&Database>, Path(item_id): Path<i32>) -> Result<impl Into
 #[handler]
 async fn create(
     db: Data<&Database>,
-    Json(item): Json<CreateTodo>,
+    Json(item): Json<CreateTodos>,
 ) -> Result<impl IntoResponse> {
     let mut con = db.get_connection().unwrap();
 
-    let result = Todo::create(&mut con, &item)
+    let result = Todos::create(&mut con, &item)
         .map(|item| Json(item))
         .map_err(InternalServerError)?;
 
@@ -58,11 +58,11 @@ async fn create(
 async fn update(
     db: Data<&Database>,
     Path(item_id): Path<i32>,
-    Json(item): Json<UpdateTodo>,
+    Json(item): Json<UpdateTodos>,
 ) -> Result<impl IntoResponse> {
     let mut con = db.get_connection().unwrap();
 
-    let result = Todo::update(&mut con, item_id, &item)
+    let result = Todos::update(&mut con, item_id, &item)
         .map(|item| Json(item))
         .map_err(InternalServerError)?;
 
@@ -73,7 +73,7 @@ async fn update(
 async fn destroy(db: Data<&Database>, Path(item_id): Path<i32>) -> Result<impl IntoResponse> {
     let mut con = db.get_connection().unwrap();
 
-    let result = Todo::delete(&mut con, item_id)
+    let result = Todos::delete(&mut con, item_id)
         .map(|amount| {
             if amount > 0 {
                 StatusCode::OK
