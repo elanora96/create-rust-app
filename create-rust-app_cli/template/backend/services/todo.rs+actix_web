@@ -1,6 +1,6 @@
 use actix_web::{delete, Error, get, HttpResponse, post, put, Result, web::{Data, Json, Path, Query}};
 use create_rust_app::Database;
-use crate::models::todos::{CreateTodos, Todos, UpdateTodos};
+use crate::models::todos::{CreateTodos, Todos, TodosFilter, UpdateTodos};
 
 #[tsync::tsync]
 #[derive(serde::Deserialize)]
@@ -15,6 +15,11 @@ async fn index(
     Query(info): Query<PaginationParams>,
 ) -> HttpResponse {
     let mut con = db.get_connection().unwrap();
+
+    let query = TodosFilter {
+        completed: Some(true)
+        ..Default::default()
+    };
 
     let result = Todos::paginate(&mut con, info.page, info.page_size);
 
@@ -79,7 +84,7 @@ async fn destroy(
 ) -> HttpResponse {
     let mut con = db.get_connection().unwrap();
 
-    let result = Todo::delete(&mut con, item_id.into_inner());
+    let result = Todos::delete(&mut con, item_id.into_inner());
 
     if result.is_ok() {
         HttpResponse::Ok().finish()
