@@ -26,7 +26,7 @@ lettre = "0.11.7"
 tera = { version = "1.19" }
 lazy_static = { version = "1.4" }
 serde = { version = "1", features = ["derive"] }
-diesel = { version = "2.1", default-features = false, features = [
+diesel = { version = "2.2.3", default-features = false, features = [
   "uuid",
   "r2d2",
   "chrono",
